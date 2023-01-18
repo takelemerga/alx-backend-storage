@@ -12,8 +12,8 @@ class Cache:
         self.__redis.flushdb()
 
 
-def store(data):
-    """generate random key and return it"""
-    r_key = str(uuid.uuid4())
-    self.__redis.set(r_key, data)
-    return r_key
+    def store(self, data):
+        """generate random key and return it"""
+        r_key = str(uuid.uuid4())
+        self.__redis.set(r_key, data)
+        return r_key
