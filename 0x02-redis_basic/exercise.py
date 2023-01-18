@@ -9,7 +9,7 @@ import redis
 class Cache:
     def __init__(self):
         self.__redis = redis.Redis()
-        self.__redis.flush()
+        self.__redis.flushdb()
 
 
 def store(data):
