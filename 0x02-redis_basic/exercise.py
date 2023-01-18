@@ -17,6 +17,16 @@ class Cache:
         self._redis.set(r_key, data)
         return r_key
 
+    def get(
+            self,
+            key: str,
+            fn: Callable = None,
+            ) -> Union[str, bytes, int, float]:
+        """Retrieves a value from a Redis data storage.
+        """
+        data = self._redis.get(key)
+        return fn(data) if fn is not None else data
+
     def get_str(self, key: str) -> str:
         """convert to string data type"""
         value = self._redis.get(key)
