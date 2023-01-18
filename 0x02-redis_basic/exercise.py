@@ -4,6 +4,19 @@ python module interact with redis server
 """
 from uuid import uuid4
 import redis
+from functools import wraps
+from typing import Any, Callable, Union
+
+
+def count_calls(method: Callable) -> Callable:
+    """count number of times cache methods called"""
+    @wraps(method)
+    def wrapper(self, *args, **kwargs):
+        """invokes func"""
+        if isinstance(self._redis, redis.Redis):
+            self._redis.incr(method.__qualname__)
+        return method(self, *args, **kwargs)
+    return wrapper
 
 
 class Cache:
