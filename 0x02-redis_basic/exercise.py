@@ -2,18 +2,18 @@
 """
 python module interact with redis server
 """
-import uuid
+from uuid import uuid4
 import redis
 
 
 class Cache:
     def __init__(self):
-        self.__redis = redis.Redis()
-        self.__redis.flushdb()
+        self._redis = redis.Redis()
+        self._redis.flushdb()
 
 
     def store(self, data):
         """generate random key and return it"""
-        r_key = str(uuid.uuid4())
-        self.__redis.set(r_key, data)
+        r_key = str(uuid4())
+        self._redis.set(r_key, data)
         return r_key
