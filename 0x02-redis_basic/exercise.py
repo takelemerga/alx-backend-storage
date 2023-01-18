@@ -19,6 +19,39 @@ def count_calls(method: Callable) -> Callable:
     return wrapper
 
 
+def call_history(method: Callable) -> Callable:
+    """Tracks the call details of a method in a Cache class"""
+    key = method.__qualname__
+    inputs = key + ":inputs"
+    outputs = key + ":outputs"
+
+    @wraps(method)
+    def invoker(self, *args, **kwargs):
+        """ invoker """
+        self._redis.rpush(inputs, str(args))
+        value = method(self, *args, **kwargs)
+        if isinstance(self._redis, redis.Redis):
+            self._redis.rpush(outputs, str(value))
+        return value
+
+    return invoker
+
+
+def replay(method: Callable) -> None:
+    """
+    Replays the history of a function
+    """
+    name = method.__qualname__
+    store = redis.Redis()
+    calls_count = store.get(name).decode("utf-8")
+    print("{} was called {} times:".format(name, calls_count))
+    inputs = store.lrange(name + ":inputs", 0, -1)
+    outputs = store.lrange(name + ":outputs", 0, -1)
+    for i, o in zip(inputs, outputs):
+        print("{}(*{}) -> {}".format(name, i.decode('utf-8'),
+                                     o.decode('utf-8')))
+
+
 class Cache:
     def __init__(self):
         self._redis = redis.Redis()
