@@ -22,9 +22,8 @@ def logStats():
     )
 
     print(f'{status_check} status check')
-
     print('IPs:')
-    request_logs = server_collection.aggregate(
+    request_logs = nginx_collection.aggregate(
         [
             {
                 '$group': {'_id': "$ip", 'totalRequests': {'$sum': 1}}
