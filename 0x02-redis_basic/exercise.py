@@ -53,6 +53,7 @@ def replay(method: Callable) -> None:
 
 
 class Cache:
+    """Cache Class"""
     def __init__(self):
         self._redis = redis.Redis()
         self._redis.flushdb()
